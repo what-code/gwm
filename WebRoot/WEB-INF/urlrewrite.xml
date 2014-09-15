@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Configuration file for UrlRewriteFilter http://tuckey.org/urlrewrite/ -->
+<urlrewrite decode-using="null">
+
+	<!-- 购完美 -->
+	<rule>
+		<note>购完美</note>
+		<from>^/?(index)?/?$</from>
+		<to>/index.do</to>
+	</rule>
+	<!-- 登陆 -->
+	<rule>
+		<note>购完美-登陆</note>
+		<from>^/login-home.html$</from>
+		<to>/login.do</to>
+	</rule>
+
+	<!-- 验证功能 -->
+	<rule>
+		<note>购完美-注册-邮箱验证(ajax)</note>
+		<from>^/mialValidate.html$</from>
+		<to>/mialValidate.do</to>
+	</rule>
+	<rule>
+		<note>购完美-注册-验证码验证(ajax)</note>
+		<from>^/codeValidate.html$</from>
+		<to>/codeValidate.do</to>
+	</rule>
+	<rule>
+		<note>购完美-注册-头像上传(ajax)</note>
+		<from>^/imgUpload.html$</from>
+		<to>/imgUpload.do</to>
+	</rule>
+	<rule>
+		<note>购完美-注册-验证频道名(ajax)</note>
+		<from>^/chnNameValidate.html$</from>
+		<to>/chnNameValidate.do</to>
+	</rule>
+
+	<!-- 注册功能 -->
+	<rule>
+		<note>购完美-注册-平台用户信息</note>
+		<from>^/register-base.html$</from>
+		<to>/register.do</to>
+	</rule>
+	<rule>
+		<note>购完美-注册-邮箱激活</note>
+		<from>^/register-activation.html$</from>
+		<to>/regBase.do</to>
+	</rule>
+	<rule>
+		<note>购完美-注册-频道信息</note>
+		<from>^/register-info.html$</from>
+		<to>/regActivation.do</to>
+	</rule>
+	<rule>
+		<note>购完美-注册-主页</note>
+		<from>^/reg-home.html$</from>
+		<to>/regInfo.do</to>
+	</rule>
+
+	<!-- 频道信息 -->
+	<rule>
+		<note>购完美-频道信息修改</note>
+		<from>^/channel-info.html$</from>
+		<to>/chnInfo.do</to>
+	</rule>
+	<rule>
+		<note>购完美-频道信息修改成功</note>
+		<from>^/channel-update.html$</from>
+		<to>/chnUpdateInfo.do</to>
+	</rule>
+
+	<!-- 退出登陆 -->
+	<rule>
+		<note>购完美-退出登陆</note>
+		<from>^/exit-login.html$</from>
+		<to>/exitLogin.do</to>
+	</rule>
+
+	<!-- 返回主页 -->
+	<rule>
+		<note>购完美-返回主页</note>
+		<from>^/home.html$</from>
+		<to>/home.do</to>
+	</rule>
+
+	<!-- 购完美素材管理主页(MessageFileController) -->
+	<rule>
+		<note>素材管理主页</note>
+		<from>^/file_main.html/?$</from>
+		<to>/file_main.do</to>
+	</rule>
+
+	<!--MessageFileController -->
+	<rule>
+		<note>单图文</note>
+		<from>^/file_single.html/?$</from>
+		<to>/file_single.do</to>
+	</rule>
+
+	<!--MessageFileController -->
+	<rule>
+		<note>多图文</note>
+		<from>^/file_multi.html/?$</from>
+		<to>/file_multi.do</to>
+	</rule>
+
+	<!--MessageFileController -->
+	<rule>
+		<note>图片</note>
+		<from>^/file_img.html/?$</from>
+		<to>/file_img.do</to>
+	</rule>
+
+	<!--MessageFileController -->
+	<rule>
+		<note>上传图片</note>
+		<from>^/upload_img.html/?$</from>
+		<to>/upload_img.do</to>
+	</rule>
+
+	<!--MessageFileController -->
+	<rule>
+		<note>保存单图文</note>
+		<from>^/save_single_mes.html/?$</from>
+		<to>/save_single_mes.do</to>
+	</rule>
+
+	<!--MessageFileController -->
+	<rule>
+		<note>保存多图文</note>
+		<from>^/save_multi_mes.html/?$</from>
+		<to>/save_multi_mes.do</to>
+	</rule>
+
+	<!--MessageFileController -->
+	<rule>
+		<note>发送消息</note>
+		<from>^/send.html/?$</from>
+		<to>/send.do</to>
+	</rule>
+
+	<!--MessageFileController -->
+	<rule>
+		<note>已发送消息</note>
+		<from>^/sended.html/?$</from>
+		<to>/sended.do</to>
+	</rule>
+
+	<!--MessageFileController -->
+	<rule>
+		<note>消息详情</note>
+		<from>^/detail/([0-9a-zA-Z]+).html/?$</from>
+		<to>/message_detail.do?mid=$1</to>
+	</rule>
+	
+	<!--MessageFileController -->
+	<rule>
+		<note>多图文预览</note>
+		<from>^/preview/([0-9a-zA-Z]+).html/?$</from>
+		<to>/preview_multi.do?mid=$1</to>
+	</rule>
+
+	<!--error -->
+	<rule>
+		<note>错误页面跳转</note>
+		<from>^/error.html$</from>
+		<to>/error.do</to>
+	</rule>
+
+	<!-- 用户协议 -->
+	<rule>
+		<note>用户协议</note>
+		<from>^/pact.html$</from>
+		<to>/pact.do</to>
+	</rule>
+</urlrewrite>

@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	default-autowire="byName" default-lazy-init="false"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+	<context:annotation-config />
+
+	<context:component-scan base-package="com.b5m">
+		<context:include-filter type="regex"
+			expression="com.b5m.*.dao" />
+		<context:include-filter type="regex"
+			expression="com.b5m.*.service" />
+		<context:include-filter type="regex"
+			expression="com.b5m.*.ctrl" />
+		
+	</context:component-scan>
+
+	<context:property-placeholder location="/WEB-INF/config.properties" />
+	
+	<util:properties id="configProp" location="/WEB-INF/config.properties" />
+
+	<tx:annotation-driven transaction-manager="transactionManager" />
+
+	<!-- <aop:aspectj-autoproxy /> -->
+
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">${hibernate.dialect}</prop>
+				<prop key="hbm2ddl.auto">${hbm2ddl.auto}</prop>
+				<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+				<prop key="hibernate.format_sql">${hibernate.format_sql}</prop>
+				<prop key="hibernate.order_updates">${hibernate.order_updates}</prop>
+				<prop key="hibernate.generate_statistics">${hibernate.generate_statistics}</prop>
+				<prop key="hibernate.use_sql_comments">${hibernate.use_sql_comments}</prop>
+				<!-- <prop key="hibernate.cache.provider_class">${hibernate.cache.provider_class}</prop> 
+					<prop key="hibernate.cache.use_minimal_puts">${hibernate.cache.use_minimal_puts}</prop> 
+					<prop key="hibernate.cache.use_query_cache">${hibernate.cache.use_query_cache}</prop> 
+					<prop key="hibernate.cache.use_structured_entries">${hibernate.cache.use_structured_entries}</prop> -->
+			</props>
+		</property>
+		<!-- 扫描实体类model -->
+		<property name="packagesToScan">
+			<list>
+				<value>com.b5m.gwm.model</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close">
+		<property name="driverClass" value="${jdbc.driverClassName}" />
+		<property name="jdbcUrl" value="${jdbc.url}" />
+		<property name="preferredTestQuery" value="select count(*) from Dual"></property>
+		<property name="idleConnectionTestPeriod" value="60"></property>
+		<property name="testConnectionOnCheckin" value="false"></property>
+		<property name="maxIdleTime" value="30000"></property>
+
+		<property name="initialPoolSize" value="10"></property>
+		<property name="maxPoolSize" value="100"></property>
+		<property name="minPoolSize" value="10"></property>
+		<property name="acquireIncrement" value="10"></property>
+
+		<property name="acquireRetryAttempts" value="10"></property>
+		<property name="breakAfterAcquireFailure" value="false"></property>
+
+		<property name="properties">
+			<props>
+				<prop key="user">${jdbc.username}</prop>
+				<prop key="password">${jdbc.password}</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="b5mInterceptor" class="com.b5m.web.core.B5MInterceptorAdapter">
+		<!-- 排除拦截请求url -->
+		<property name="excludeMappingURLs">
+			<list>
+				<value>/b5mclist</value>
+				<value>/b5mglist</value>
+				<value>/b5mgcount</value>
+				<value>/b5tClientTao</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean
+		class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+		<property name="interceptors">
+			<list>
+				<ref bean="b5mInterceptor" />
+			</list>
+		</property>
+	</bean>
+
+	<!-- jackjson -->
+	<bean
+		class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+		<property name="messageConverters">
+			<list>
+				<bean
+					class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+		<property name="viewClass"
+			value="org.springframework.web.servlet.view.JstlView" />
+		<property name="prefix" value="/WEB-INF/page/" />
+		<property name="suffix" value=".jsp" />
+		<property name="cache" value="true" />
+	</bean>
+
+	<!-- spring spy.memcached bean -->
+	<bean id="memcachedClient" name="memcachedClient"
+		class="net.spy.memcached.spring.MemcachedClientFactoryBean">
+		<property name="servers" value="${memcached.servers}" />
+		<property name="protocol" value="BINARY" />
+		<property name="transcoder">
+			<bean class="net.spy.memcached.transcoders.SerializingTranscoder">
+				<property name="compressionThreshold" value="1024" />
+			</bean>
+		</property>
+		<property name="opTimeout" value="3000" />
+		<property name="timeoutExceptionThreshold" value="1998" />
+		<property name="hashAlg" value="KETAMA_HASH" />
+		<property name="locatorType" value="CONSISTENT" />
+		<property name="failureMode" value="Redistribute" />
+		<property name="useNagleAlgorithm" value="false" />
+	</bean>
+
+	<bean name="memcachedClientNew"
+		class="net.rubyeye.xmemcached.utils.XMemcachedClientFactoryBean"
+		destroy-method="shutdown">
+		<property name="servers">
+			<value>${memcached.servers}</value>
+		</property>
+	</bean>
+	
+	<bean id="multipartResolver"  
+	    class="org.springframework.web.multipart.commons.CommonsMultipartResolver">  
+	    <!-- 设置上传文件的最大尺寸为10MB -->  
+	    <property name="maxUploadSize">  
+	        <value>10485760</value>  
+	    </property>  
+	</bean> 
+</beans>
